@@ -1,0 +1,374 @@
+/**
+ * UI Components - Atomic Design
+ */
+
+/* ================== Category Tabs ================== */
+.category-tabs {
+  display: flex;
+  gap: var(--spacing-8);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-4);
+  scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  padding: var(--spacing-8) var(--spacing-12);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  transition: all var(--transition-normal);
+}
+
+.tab-btn.active {
+  background-color: var(--color-blue);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-md);
+}
+
+/* ================== Ticket Card ================== */
+.ticket-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-bounce), box-shadow var(--transition-normal);
+  /* The color will be overridden via inline style variable or class */
+  background-color: var(--color-green); 
+}
+
+.ticket-card:active {
+  transform: scale(0.97);
+}
+
+/* Thematic Colors mapped to CSS Custom Properties per card */
+.ticket-card[data-theme="green"] { background-color: var(--color-green); }
+.ticket-card[data-theme="blue"] { background-color: var(--color-blue); }
+.ticket-card[data-theme="yellow"] { background-color: var(--color-yellow); color: var(--color-text-primary); }
+
+/* Card specific typography overrides for yellow theme */
+.ticket-card[data-theme="yellow"] .card-subtitle { color: rgba(0,0,0,0.6); }
+
+/* Card Actions */
+.card-actions {
+  position: absolute;
+  top: var(--spacing-4);
+  right: var(--spacing-4);
+  z-index: 5;
+}
+
+/* Image Area */
+.card-img-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: var(--spacing-8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-img-container img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+/* Dashed Divider with semicircular cutouts */
+.ticket-divider {
+  position: relative;
+  height: 20px;
+  background-image: linear-gradient(to right, var(--color-divider-dashed) 40%, rgba(255, 255, 255, 0) 20%);
+  background-position: top;
+  background-size: 8px 2px;
+  background-repeat: repeat-x;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* The cutout holes */
+.ticket-divider::before,
+.ticket-divider::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-surface);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.ticket-divider::before { left: -10px; }
+.ticket-divider::after { right: -10px; }
+
+/* Content Area */
+.card-content {
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.card-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-inverse-muted);
+}
+
+/* Bottom flex row */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: var(--spacing-8);
+}
+
+.card-price {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.card-price span {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+}
+
+.card-badge {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: var(--font-weight-bold);
+}
+
+/* ================== Floating Action Button ================== */
+.fab {
+  position: absolute;
+  bottom: 80px; /* Above bottom nav */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-red);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-fab);
+  z-index: 20;
+  transition: transform var(--transition-bounce), background-color var(--transition-fast);
+}
+
+.fab:active, .fab.active {
+  transform: translateX(-50%) scale(0.9);
+  background-color: #D81730;
+}
+
+/* ================== Bottom Navigation ================== */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background-color: var(--color-surface);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+  z-index: 15;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-normal);
+}
+
+.nav-item.active {
+  color: var(--color-blue);
+  background-color: rgba(62, 94, 223, 0.1);
+}
+
+.discount-icon {
+  color: var(--color-red);
+}
+
+/* ================== Buttons ================== */
+.btn {
+  padding: var(--spacing-12);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  text-align: center;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  width: 100%;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--color-blue);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+/* ================== Loader & Empty States ================== */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-top-color: var(--color-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-8);
+}
+
+@keyframes spin { 
+  to { transform: rotate(360deg); } 
+}
+
+/* ================== Admin List ================== */
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-16) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-surface);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.admin-item-info {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.admin-item-actions {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.btn-sm {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: var(--font-size-xs);
+  width: auto;
+}
+
+.btn-danger {
+  background-color: var(--color-red);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+  border: none;
+}
+
+.form-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-4);
+  display: block;
+}
+
+/* ================== Dropdown Menu ================== */
+.menu-container {
+  position: relative;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-icon:active {
+  background-color: rgba(0,0,0,0.05);
+}
+
+.menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  min-width: 120px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.menu-dropdown.hidden {
+  display: none;
+}
+
+.menu-item {
+  background: none;
+  border: none;
+  padding: var(--spacing-12) var(--spacing-16);
+  text-align: left;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  width: 100%;
+}
+
+.menu-item:active {
+  background-color: rgba(0,0,0,0.05);
+}
+
+.menu-item.delete-btn {
+  color: var(--color-red);
+}
