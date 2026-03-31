@@ -13,6 +13,13 @@ export class MockAdapter extends DatabaseWrapper {
       { id: '4', nombre: 'Galletas Oreo', categoria: 'Galletas', precio: 2.15, imagen_url: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&h=300&fit=crop' },
       { id: '5', nombre: 'Agua Mineral', categoria: 'Bebidas', precio: 1.00, imagen_url: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=300&h=300&fit=crop' }
     ];
+    this.inventoryData = [
+      { producto_id: '1', cantidad: 10 },
+      { producto_id: '2', cantidad: 5 },
+      { producto_id: '3', cantidad: 20 },
+      { producto_id: '4', cantidad: 15 },
+      { producto_id: '5', cantidad: 30 }
+    ];
   }
 
   async getProducts() {
@@ -28,12 +35,14 @@ export class MockAdapter extends DatabaseWrapper {
         if (!product.nombre || !product.precio) {
           return reject(new Error("Missing required fields"));
         }
+        const id = Date.now().toString();
         const newProduct = { 
           ...product, 
-          id: Date.now().toString(), 
+          id, 
           fecha_creacion: new Date().toISOString() 
         };
         this.data.push(newProduct);
+        this.inventoryData.push({ producto_id: id, cantidad: 0 });
         resolve(newProduct);
       }, 500);
     });
@@ -56,8 +65,29 @@ export class MockAdapter extends DatabaseWrapper {
         const index = this.data.findIndex(p => p.id === id);
         if (index === -1) return reject(new Error("Producto no encontrado"));
         this.data.splice(index, 1);
+        this.inventoryData = this.inventoryData.filter(i => i.producto_id !== id);
         resolve(true);
       }, 500);
+    });
+  }
+
+  async getInventory() {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve([...this.inventoryData]), 400);
+    });
+  }
+
+  async updateInventory(productId, quantity) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const index = this.inventoryData.findIndex(i => i.producto_id === productId);
+        if (index === -1) {
+          this.inventoryData.push({ producto_id: productId, cantidad: quantity });
+        } else {
+          this.inventoryData[index].cantidad = quantity;
+        }
+        resolve(true);
+      }, 300);
     });
   }
 }

@@ -6,6 +6,7 @@ export class Store {
   constructor(initialState = {}) {
     this.state = {
       products: [],
+      inventory: [],
       loading: false,
       error: null,
       activeCategory: 'Todos',

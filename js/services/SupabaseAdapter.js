@@ -38,6 +38,12 @@ export class SupabaseAdapter extends DatabaseWrapper {
       .single();
 
     if (error) throw new Error(error.message);
+
+    // Initialize inventory for the new product
+    await this.supabase
+      .from('inventario')
+      .insert([{ producto_id: data.id, cantidad: 0 }]);
+
     return data;
   }
 
@@ -84,5 +90,27 @@ export class SupabaseAdapter extends DatabaseWrapper {
       .getPublicUrl(filePath);
       
     return publicURLData.publicUrl;
+  }
+
+  async getInventory() {
+    const { data, error } = await this.supabase
+      .from('inventario')
+      .select('*');
+      
+    if (error) throw new Error(error.message);
+    return data || [];
+  }
+
+  async updateInventory(productId, quantity) {
+    const { error } = await this.supabase
+      .from('inventario')
+      .upsert({ 
+        producto_id: productId, 
+        cantidad: quantity,
+        ultima_actualizacion: new Date().toISOString()
+      }, { onConflict: 'producto_id' });
+
+    if (error) throw new Error(error.message);
+    return true;
   }
 }

@@ -7,4 +7,6 @@ export class DatabaseWrapper {
   async addProduct(product) { throw new Error("Method not implemented."); }
   async updateProduct(id, product) { throw new Error("Method not implemented."); }
   async deleteProduct(id) { throw new Error("Method not implemented."); }
+  async getInventory() { throw new Error("Method not implemented."); }
+  async updateInventory(productId, quantity) { throw new Error("Method not implemented."); }
 }

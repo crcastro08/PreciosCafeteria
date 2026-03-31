@@ -372,3 +372,93 @@
 .menu-item.delete-btn {
   color: var(--color-red);
 }
+
+/* ================== Inventory View ================== */
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding: var(--spacing-16);
+}
+
+.inventory-item-card {
+  background-color: var(--color-surface);
+  padding: var(--spacing-16);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  border: 1px solid var(--color-border);
+  transition: transform var(--transition-bounce), box-shadow var(--transition-normal);
+}
+
+.inventory-item-card:active {
+  transform: scale(0.99);
+  box-shadow: none;
+}
+
+.inventory-item-info {
+  flex: 1;
+}
+
+.inventory-item-name {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.inventory-item-category {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.inventory-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.stock-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.stock-btn:active {
+  background-color: var(--color-border);
+  transform: scale(0.9);
+}
+
+.stock-input {
+  width: 60px;
+  text-align: center;
+  padding: var(--spacing-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+}
+
+.stock-input:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 2px rgba(62, 94, 223, 0.1);
+}

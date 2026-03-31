@@ -15,6 +15,8 @@ export class AdminView {
     
     this.navCatalog = document.getElementById('nav-catalog');
     this.navAdmin = document.getElementById('nav-admin');
+    this.navInventory = document.getElementById('nav-inventory');
+    this.inventorySection = document.getElementById('inventory-view');
 
     this.setupListeners();
   }
@@ -42,16 +44,20 @@ export class AdminView {
   toggleView(view) {
     if (view === 'admin') {
       this.catalogSection.classList.replace('view-active', 'view-hidden');
+      this.inventorySection.classList.replace('view-active', 'view-hidden');
       this.adminSection.classList.replace('view-hidden', 'view-active');
       this.fabAdd.style.display = 'none';
       this.navAdmin.classList.add('active');
       this.navCatalog.classList.remove('active');
+      this.navInventory.classList.remove('active');
     } else {
       this.adminSection.classList.replace('view-active', 'view-hidden');
       this.catalogSection.classList.replace('view-hidden', 'view-active');
+      this.inventorySection.classList.replace('view-active', 'view-hidden');
       this.fabAdd.style.display = 'flex';
       this.navCatalog.classList.add('active');
       this.navAdmin.classList.remove('active');
+      this.navInventory.classList.remove('active');
     }
   }
 

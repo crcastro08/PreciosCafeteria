@@ -4,6 +4,7 @@ import { SupabaseAdapter } from './services/SupabaseAdapter.js';
 import { CONFIG } from './core/config.js';
 import { CatalogView } from './ui/views/CatalogView.js';
 import { AdminView } from './ui/views/AdminView.js';
+import { InventoryView } from './ui/views/InventoryView.js';
 
 /**
  * Bootstrap Application
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. View Controllers
   const catalogView = new CatalogView(store, db);
   const adminView = new AdminView(store, db);
+  const inventoryView = new InventoryView(store, db);
 
   // 4. Kickstart Data Fetching
   catalogView.fetchProducts();
