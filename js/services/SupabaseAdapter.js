@@ -113,4 +113,101 @@ export class SupabaseAdapter extends DatabaseWrapper {
     if (error) throw new Error(error.message);
     return true;
   }
+
+  async registerSale(saleData) {
+    const user = saleData.usuario;
+    const isEconomia = user.nombre === 'Economia';
+
+    if (!isEconomia && user.saldo < saleData.total) {
+      throw new Error(`Saldo insuficiente. ${user.nombre} tiene $${user.saldo.toFixed(2)} pero la compra es de $${saleData.total.toFixed(2)}.`);
+    }
+
+    // 1. Insert the sale into 'ventas' table
+    const { error: saleError } = await this.supabase
+      .from('ventas')
+      .insert([{
+        producto_id: saleData.productId,
+        producto: saleData.productName,
+        cantidad: saleData.quantity,
+        precio: saleData.price,
+        venta: saleData.total,
+        usuario: user.nombre
+      }]);
+
+    if (saleError) throw new Error("Error registrando venta: " + saleError.message);
+
+    // 2. Fetch current inventory to debit the quantity
+    const { data: invData, error: invError } = await this.supabase
+      .from('inventario')
+      .select('cantidad')
+      .eq('producto_id', saleData.productId)
+      .single();
+
+    if (invError && invError.code !== 'PGRST116') {
+      throw new Error("Error obteniendo inventario: " + invError.message);
+    }
+
+    const currentQty = invData ? invData.cantidad : 0;
+    const newQty = currentQty - saleData.quantity;
+
+    // 3. Update the inventory
+    await this.updateInventory(saleData.productId, newQty);
+
+    // 4. Update user balance
+    if (!isEconomia) {
+      const newSaldo = user.saldo - saleData.total;
+      await this.updateUser(user.id, { saldo: newSaldo });
+    }
+
+    return true;
+  }
+
+  // ================= USERS =================
+
+  async getUsers() {
+    const { data, error } = await this.supabase
+      .from('usuarios')
+      .select('*')
+      .order('nombre', { ascending: true });
+      
+    if (error) throw new Error(error.message);
+    return data || [];
+  }
+
+  async addUser(user) {
+    const { data, error } = await this.supabase
+      .from('usuarios')
+      .insert([{
+        nombre: user.nombre,
+        correo: user.correo,
+        saldo: user.saldo
+      }])
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async updateUser(id, changes) {
+    const { data, error } = await this.supabase
+      .from('usuarios')
+      .update(changes)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async deleteUser(id) {
+    const { error } = await this.supabase
+      .from('usuarios')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw new Error(error.message);
+    return true;
+  }
 }

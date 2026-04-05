@@ -7,6 +7,8 @@ export class Store {
     this.state = {
       products: [],
       inventory: [],
+      usuarios: [],
+      currentUser: null,
       loading: false,
       error: null,
       activeCategory: 'Todos',

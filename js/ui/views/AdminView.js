@@ -10,13 +10,15 @@ export class AdminView {
     this.form = document.getElementById('admin-form');
     this.catalogSection = document.getElementById('catalog-view');
     this.adminSection = document.getElementById('admin-view');
+    this.inventorySection = document.getElementById('inventory-view');
+    this.usersSection = document.getElementById('users-view'); // Extra section support
     this.fabAdd = document.getElementById('fab-add');
     this.btnCancel = document.getElementById('btn-cancel-admin');
     
     this.navCatalog = document.getElementById('nav-catalog');
     this.navAdmin = document.getElementById('nav-admin');
     this.navInventory = document.getElementById('nav-inventory');
-    this.inventorySection = document.getElementById('inventory-view');
+    this.navUsers = document.getElementById('nav-users');
 
     this.setupListeners();
   }
@@ -42,6 +44,9 @@ export class AdminView {
   }
 
   toggleView(view) {
+    if (this.usersSection) this.usersSection.classList.replace('view-active', 'view-hidden');
+    if (this.navUsers) this.navUsers.classList.remove('active');
+
     if (view === 'admin') {
       this.catalogSection.classList.replace('view-active', 'view-hidden');
       this.inventorySection.classList.replace('view-active', 'view-hidden');

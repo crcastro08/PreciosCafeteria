@@ -5,6 +5,7 @@ import { CONFIG } from './core/config.js';
 import { CatalogView } from './ui/views/CatalogView.js';
 import { AdminView } from './ui/views/AdminView.js';
 import { InventoryView } from './ui/views/InventoryView.js';
+import { UsersView } from './ui/views/UsersView.js';
 
 /**
  * Bootstrap Application
@@ -28,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const catalogView = new CatalogView(store, db);
   const adminView = new AdminView(store, db);
   const inventoryView = new InventoryView(store, db);
+  const usersView = new UsersView(store, db);
 
   // 4. Kickstart Data Fetching
   catalogView.fetchProducts();
+  usersView.fetchUsers();
 });

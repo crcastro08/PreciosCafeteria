@@ -8,14 +8,17 @@ export class InventoryView {
     this.store = store;
     this.db = db;
     this.listContainer = document.getElementById('inventory-list');
-    this.feedback = document.getElementById('feedback-container');
+    this.feedback = document.getElementById('inventory-feedback');
     this.navInventory = document.getElementById('nav-inventory');
     this.navCatalog = document.getElementById('nav-catalog');
     this.navAdmin = document.getElementById('nav-admin');
+    this.navUsers = document.getElementById('nav-users'); // New users nav
+
     this.sections = {
       catalog: document.getElementById('catalog-view'),
       admin: document.getElementById('admin-view'),
-      inventory: document.getElementById('inventory-view')
+      inventory: document.getElementById('inventory-view'),
+      users: document.getElementById('users-view') // New users section
     };
 
     this.store.subscribe(this.render.bind(this));
@@ -40,9 +43,10 @@ export class InventoryView {
     });
 
     // Update nav icons
-    this.navInventory.classList.toggle('active', viewName === 'inventory');
-    this.navCatalog.classList.toggle('active', viewName === 'catalog');
-    this.navAdmin.classList.toggle('active', viewName === 'admin');
+    if (this.navInventory) this.navInventory.classList.toggle('active', viewName === 'inventory');
+    if (this.navCatalog) this.navCatalog.classList.toggle('active', viewName === 'catalog');
+    if (this.navAdmin) this.navAdmin.classList.toggle('active', viewName === 'admin');
+    if (this.navUsers) this.navUsers.classList.toggle('active', viewName === 'users');
 
     // Hide FAB in inventory
     const fab = document.getElementById('fab-add');
@@ -97,7 +101,13 @@ export class InventoryView {
       return;
     }
 
-    if (state.products.length === 0) {
+    const excludedKeywords = ['cafe', 'café', 'te', 'té', 'vino'];
+    const filteredProducts = state.products.filter(p => {
+      const name = p.nombre.toLowerCase();
+      return !excludedKeywords.some(kw => name.includes(kw));
+    });
+
+    if (filteredProducts.length === 0) {
       this.listContainer.innerHTML = '';
       this.feedback.style.display = 'flex';
       renderEmpty(this.feedback);
@@ -108,7 +118,7 @@ export class InventoryView {
     this.listContainer.innerHTML = '';
 
     const fragment = document.createDocumentFragment();
-    state.products.forEach(product => {
+    filteredProducts.forEach(product => {
       const invItem = state.inventory.find(i => i.producto_id === product.id);
       const quantity = invItem ? invItem.cantidad : 0;
 

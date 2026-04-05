@@ -374,11 +374,17 @@
 }
 
 /* ================== Inventory View ================== */
+.inventory-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .inventory-list {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-12);
-  padding: var(--spacing-16);
+  padding: 0;
+  margin-top: var(--spacing-8);
 }
 
 .inventory-item-card {
@@ -445,7 +451,7 @@
 }
 
 .stock-input {
-  width: 60px;
+  width: 80px;
   text-align: center;
   padding: var(--spacing-8);
   border: 1px solid var(--color-border);
@@ -462,3 +468,233 @@
   border-color: var(--color-blue);
   box-shadow: 0 0 0 2px rgba(62, 94, 223, 0.1);
 }
+
+/* ================== Sale Dialog Modal ================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+  padding: var(--spacing-16);
+}
+
+.modal-backdrop.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sale-dialog {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  transform: translateY(0) scale(1);
+  transition: transform var(--transition-bounce);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-backdrop.hidden .sale-dialog {
+  transform: translateY(20px) scale(0.95);
+}
+
+.close-btn {
+  position: absolute;
+  top: var(--spacing-8);
+  right: var(--spacing-8);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-base);
+  z-index: 2;
+}
+
+.sale-header {
+  padding: var(--spacing-24) var(--spacing-24) var(--spacing-16);
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+  background: linear-gradient(135deg, rgba(62,94,223,0.05) 0%, rgba(255,255,255,0) 100%);
+}
+
+.sale-header h2 {
+  margin: 0 0 var(--spacing-4);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+}
+
+.sale-header p {
+  margin: 0;
+  color: var(--color-green);
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+}
+
+.sale-body {
+  padding: var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.sale-body label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16);
+  margin-bottom: var(--spacing-8);
+}
+
+.quantity-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  font-size: 24px;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quantity-btn:active {
+  transform: scale(0.9);
+  background-color: var(--color-border);
+}
+
+#sale-quantity {
+  width: 80px;
+  height: 48px;
+  text-align: center;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.sale-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-16);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+}
+
+.sale-total strong {
+  font-size: var(--font-size-xl);
+  color: var(--color-blue);
+}
+
+.sale-footer {
+  padding: var(--spacing-16) var(--spacing-24) var(--spacing-24);
+}
+
+/* ================== User Selector & Users View ================== */
+.user-selector {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 2px;
+}
+
+.user-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-4) var(--spacing-8);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-blue);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.user-dropdown-btn:active {
+  transform: scale(0.95);
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-4);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  min-width: 150px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-dropdown-menu.hidden {
+  display: none;
+}
+
+.user-dropdown-item {
+  padding: var(--spacing-12) var(--spacing-16);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-bg-base);
+  transition: background-color var(--transition-fast);
+}
+
+.user-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.user-dropdown-item:active, .user-dropdown-item:hover {
+  background-color: var(--color-bg-base);
+}
+
+.users-content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-16);
+}
+

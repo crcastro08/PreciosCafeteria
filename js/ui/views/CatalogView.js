@@ -13,9 +13,121 @@ export class CatalogView {
     this.feedback = document.getElementById('feedback-container');
     this.tabs = document.querySelectorAll('.tab-btn');
     
+    // Sale Modal Elements
+    this.saleModal = document.getElementById('sale-dialog-backdrop');
+    this.saleProductName = document.getElementById('sale-product-name');
+    this.saleProductPrice = document.getElementById('sale-product-price');
+    this.saleQuantityInput = document.getElementById('sale-quantity');
+    this.saleTotalPrice = document.getElementById('sale-total-price');
+    this.btnQtyMinus = document.getElementById('btn-qty-minus');
+    this.btnQtyPlus = document.getElementById('btn-qty-plus');
+    this.btnConfirmSale = document.getElementById('btn-confirm-sale');
+    this.btnCloseSaleDialog = document.getElementById('close-sale-dialog');
+    this.currentSaleProduct = null;
+    
     // Subscribe to store updates
     this.store.subscribe(this.render.bind(this));
     this.setupListeners();
+    this.setupSaleModalListeners();
+  }
+
+  setupSaleModalListeners() {
+    this.btnCloseSaleDialog.addEventListener('click', () => this.closeSaleModal());
+    
+    // Close on backdrop click
+    this.saleModal.addEventListener('click', (e) => {
+      if (e.target === this.saleModal) this.closeSaleModal();
+    });
+
+    this.btnQtyMinus.addEventListener('click', () => {
+      let qty = parseInt(this.saleQuantityInput.value) || 1;
+      if (qty > 1) {
+        this.saleQuantityInput.value = qty - 1;
+        this.updateSaleTotal();
+      }
+    });
+
+    this.btnQtyPlus.addEventListener('click', () => {
+      let qty = parseInt(this.saleQuantityInput.value) || 1;
+      this.saleQuantityInput.value = qty + 1;
+      this.updateSaleTotal();
+    });
+
+    this.saleQuantityInput.addEventListener('input', () => {
+      let qty = parseInt(this.saleQuantityInput.value) || 1;
+      if (qty < 1) {
+        this.saleQuantityInput.value = 1;
+      }
+      this.updateSaleTotal();
+    });
+
+    this.btnConfirmSale.addEventListener('click', () => this.confirmSale());
+  }
+
+  openSaleModal(productId) {
+    const product = this.store.getState().products.find(p => p.id === productId);
+    if (!product) return;
+
+    this.currentSaleProduct = product;
+    this.saleProductName.textContent = product.nombre;
+    const price = typeof product.precio === 'number' ? product.precio : parseFloat(product.precio);
+    this.saleProductPrice.textContent = `$${price.toFixed(2)}`;
+    
+    this.saleQuantityInput.value = 1;
+    this.updateSaleTotal();
+    
+    this.saleModal.classList.remove('hidden');
+  }
+
+  closeSaleModal() {
+    this.saleModal.classList.add('hidden');
+    this.currentSaleProduct = null;
+  }
+
+  updateSaleTotal() {
+    if (!this.currentSaleProduct) return;
+    const qty = parseInt(this.saleQuantityInput.value) || 1;
+    const price = typeof this.currentSaleProduct.precio === 'number' ? this.currentSaleProduct.precio : parseFloat(this.currentSaleProduct.precio);
+    const total = qty * price;
+    this.saleTotalPrice.textContent = `$${total.toFixed(2)}`;
+  }
+
+  async confirmSale() {
+    if (!this.currentSaleProduct) return;
+    
+    const qty = parseInt(this.saleQuantityInput.value) || 1;
+    const price = typeof this.currentSaleProduct.precio === 'number' ? this.currentSaleProduct.precio : parseFloat(this.currentSaleProduct.precio);
+    const total = qty * price;
+    
+    const currentUser = this.store.getState().currentUser;
+    if (!currentUser) {
+      alert("Error: No se ha seleccionado un usuario activo.");
+      return;
+    }
+
+    const saleData = {
+      productId: this.currentSaleProduct.id,
+      productName: this.currentSaleProduct.nombre,
+      quantity: qty,
+      price: price,
+      total: total,
+      usuario: currentUser
+    };
+    
+    const originalText = this.btnConfirmSale.textContent;
+    this.btnConfirmSale.textContent = 'Registrando...';
+    this.btnConfirmSale.disabled = true;
+
+    try {
+      await this.db.registerSale(saleData);
+      alert(`Venta de ${qty}x ${this.currentSaleProduct.nombre} registrada correctamente.`);
+      this.closeSaleModal();
+    } catch (err) {
+      alert("Error al registrar venta: " + err.message);
+    } finally {
+      this.btnConfirmSale.textContent = originalText;
+      this.btnConfirmSale.disabled = false;
+    }
   }
 
   setupListeners() {
@@ -110,6 +222,15 @@ export class CatalogView {
         e.stopPropagation();
         document.querySelectorAll('.menu-dropdown').forEach(d => d.classList.add('hidden'));
         this.handleDelete(e.target.dataset.id);
+      });
+    });
+
+    // Handle generic ticket-card click for sales
+    this.grid.querySelectorAll('.ticket-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (!e.target.closest('.card-actions')) {
+          this.openSaleModal(card.dataset.id);
+        }
       });
     });
   }

@@ -26,19 +26,29 @@
   <!-- Main Application Container (Mobile First) -->
   <div id="app-container" class="app-container">
     
-    <!-- Top Header / Greeting -->
-    <header class="app-header">
-      <div class="header-content">
-        <h1 class="font-heading">Catálogo</h1>
-        <p class="text-subtitle">Productos disponibles</p>
-      </div>
-      <div class="header-actions">
-        <!-- Optional Search / Filter icon -->
-      </div>
-    </header>
-
+    
     <!-- Main Content Area: Catalog -->
     <main id="catalog-view" class="view-active">
+      <!-- Top Header / Greeting -->
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="font-heading">Catálogo</h1>
+          <p class="text-subtitle">Productos disponibles</p>
+        </div>
+        <div class="header-actions">
+          <div class="user-selector" id="user-selector">
+            <span class="user-label">Usuario</span>
+            <div class="user-dropdown-btn">
+              <span id="current-user-name">Economia</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div id="user-dropdown-menu" class="user-dropdown-menu hidden">
+              <!-- JS will populate users here -->
+            </div>
+          </div>
+        </div>
+      </header>
+
       <!-- Category Tabs -->
       <nav id="category-tabs" class="category-tabs">
         <button class="tab-btn active" data-category="Todos">Todos</button>
@@ -54,6 +64,34 @@
 
       <!-- Empty/Loading/Error State Container -->
       <div id="feedback-container" class="feedback-container"></div>
+      
+      <!-- Sale Dialog Modal -->
+      <div id="sale-dialog-backdrop" class="modal-backdrop hidden">
+        <div class="sale-dialog">
+          <button id="close-sale-dialog" class="btn-icon close-btn" aria-label="Cerrar">
+            <svg fill="currentColor" width="20" height="20" viewBox="0 0 24 24"><path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>
+          </button>
+          <div class="sale-header">
+            <h2 id="sale-product-name" class="font-heading">Registrar Venta</h2>
+            <p id="sale-product-price" class="text-subtitle">$0.00</p>
+          </div>
+          <div class="sale-body">
+            <label>Cantidad</label>
+            <div class="quantity-control">
+              <button id="btn-qty-minus" class="quantity-btn">-</button>
+              <input type="number" id="sale-quantity" value="1" min="1" max="99">
+              <button id="btn-qty-plus" class="quantity-btn">+</button>
+            </div>
+            <div class="sale-total">
+              <span>Total a cobrar:</span>
+              <strong id="sale-total-price">$0.00</strong>
+            </div>
+          </div>
+          <div class="sale-footer">
+            <button id="btn-confirm-sale" class="btn btn-primary w-100">Registrar Venta</button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Admin Panel (Hidden by default) -->
@@ -101,7 +139,6 @@
             <button type="button" id="btn-cancel-admin" class="btn btn-secondary">Cancelar</button>
           </div>
         </form>
-        </div>
       </div>
     </section>
 
@@ -116,10 +153,57 @@
       </header>
       
       <!-- Inventory Content -->
-      <div class="inventory-content" style="padding: 1rem;">
-        <div id="inventory-list" style="display: flex; flex-direction: column; gap: 1rem;">
+      <div class="inventory-content">
+        <div id="inventory-list">
           <!-- JS will populate inventory items here -->
         </div>
+        <!-- Feedback Container for Inventory -->
+        <div id="inventory-feedback" class="feedback-container"></div>
+      </div>
+    </section>
+
+    <!-- Users View (Hidden by default) -->
+    <section id="users-view" class="view-hidden">
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="font-heading">Usuarios</h1>
+          <p class="text-subtitle">Gestión de cuentas y saldos</p>
+        </div>
+        <div class="header-actions">
+          <button id="btn-show-add-user" class="btn-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+        </div>
+      </header>
+      
+      <div class="users-content">
+        <!-- Add/Edit User Form -->
+        <form id="user-form" class="admin-form hidden">
+          <input type="hidden" id="user-id" name="id">
+          
+          <div class="form-group">
+            <label for="user-name">Nombre</label>
+            <input type="text" id="user-name" name="nombre" placeholder="Ej. Juan Perez" required>
+          </div>
+          <div class="form-group">
+            <label for="user-email">Correo (Opcional)</label>
+            <input type="email" id="user-email" name="correo" placeholder="juan@ejemplo.com">
+          </div>
+          <div class="form-group">
+            <label for="user-balance">Saldo ($)</label>
+            <input type="number" step="0.01" id="user-balance" name="saldo" placeholder="0.00" required>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+            <button type="button" id="btn-cancel-user" class="btn btn-secondary">Cancelar</button>
+          </div>
+        </form>
+
+        <div id="users-list" class="admin-list">
+          <!-- JS will populate users here -->
+        </div>
+        <div id="users-feedback" class="feedback-container"></div>
       </div>
     </section>
 
@@ -139,7 +223,7 @@
       <button class="nav-item" id="nav-inventory">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
       </button>
-      <button class="nav-item discount-icon">
+      <button class="nav-item discount-icon" id="nav-users">
         <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M12.43 2.58A2 2 0 0011 2H5a2 2 0 00-2 2v6a2 2 0 00.58 1.41l9 9a2 2 0 002.82 0l6-6a2 2 0 000-2.82l-9-9zM15 15L9 9m6 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM9 15a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
       </button>
       <button class="nav-item" id="nav-admin">
